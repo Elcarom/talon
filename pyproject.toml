@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "talon-quant"
+version = "0.1.0"
+description = "TALON: Tactical Allocation & Liquidity Order Engine - Risk-first quantitative trading worker and walk-forward backtester"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [
+    { name = "TALON Quantitative Systems" }
+]
+keywords = ["quantitative-trading", "backtesting", "risk-management", "walk-forward", "stat-arb", "trend-following"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+dependencies = [
+    "numpy>=1.26.0",
+    "PyYAML>=6.0.1",
+]
+
+[project.optional-dependencies]
+live-data = [
+    "yfinance>=0.2.40",
+    "ccxt>=4.3.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.5.0",
+    "mypy>=1.10.0",
+    "types-PyYAML>=6.0.12",
+]
+
+[project.scripts]
+talon = "talon.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+talon = ["py.typed"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "N"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+mypy_path = "src"
+packages = ["talon"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

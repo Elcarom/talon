@@ -1,0 +1,12 @@
+TALON: Tactical Allocation & Liquidity Order Engine
+Copyright (c) 2026 TALON Quantitative Systems
+
+This project is an original Python implementation of a quantitative trading worker,
+portfolio risk engine, and walk-forward backtesting framework.
+
+Architectural Inspiration & Audit Attribution:
+The paper-by-default operational safety model and deterministic risk-gate philosophy
+were informed by an architectural audit of https://github.com/imikerussell/beebots
+(Copyright (c) 2026 Mike Russell, licensed under the MIT License). No source code
+was copied from the audited repository; all modules in TALON were designed and
+written from scratch in Python.
