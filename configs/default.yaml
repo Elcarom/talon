@@ -1,0 +1,71 @@
+# ============================================================================
+# TALON Quantitative Worker — Default Paper/Simulation Configuration
+# ============================================================================
+
+mode: paper
+initial_equity_usd: 100000.0
+bars_per_year: 365
+
+data:
+  source: synthetic   # "synthetic" (deterministic offline), "yfinance", or "ccxt"
+  symbols:
+    - BTC-USD
+    - ETH-USD
+    - SOL-USD
+    - AVAX-USD
+    - LINK-USD
+  timeframe: 1d
+  num_bars: 730       # 2 years of daily bars
+  seed: 42
+
+strategies:
+  vol_targeted_trend:
+    enabled: true
+    weight_allocation: 0.45
+    vol_target_ann: 0.20
+    max_asset_weight: 0.40
+    activation_threshold: 0.40
+    atr_stop_mult: 2.5
+  cross_sectional_momentum:
+    enabled: true
+    weight_allocation: 0.30
+    fast_lookback: 7
+    slow_lookback: 21
+    z_entry_threshold: 0.75
+    z_exit_threshold: 0.25
+    max_gross_weight: 0.50
+  cointegrated_mean_reversion:
+    enabled: true
+    weight_allocation: 0.25
+    pair_leg_a: ETH-USD
+    pair_leg_b: BTC-USD
+    ols_window: 60
+    z_window: 20
+    entry_z: 2.0
+    exit_z: 0.35
+    stop_z: 3.5
+    min_half_life: 2.0
+    max_half_life: 25.0
+    max_leg_weight: 0.30
+
+risk:
+  max_drawdown_pct: 0.15          # 15% portfolio peak-to-trough halt
+  daily_loss_limit_pct: 0.04      # 4% single-bar / daily loss circuit breaker
+  max_asset_weight: 0.35          # 35% max notional exposure per single asset
+  max_gross_leverage: 1.50        # 1.50x max total gross portfolio leverage
+  portfolio_vol_target: 0.25      # 25% annualized ex-ante portfolio volatility cap
+  max_pairwise_correlation: 0.80  # 0.80 correlation threshold for cluster capping
+  correlated_cluster_cap: 0.45    # Combined weight cap for highly correlated same-side pairs
+  rebalance_deadband: 0.02        # 2% minimum weight change to suppress fee churn
+  vol_lookback: 30
+
+execution:
+  taker_fee_bps: 5.0              # 5 bps (0.05%) exchange taker fee
+  half_spread_bps: 2.5            # 2.5 bps half-spread (5 bps full bid-ask spread)
+  impact_slippage_coeff: 0.10     # Volatility-proportional slippage coefficient
+  annual_funding_drag_pct: 0.03   # 3% annualized net funding rate drag on directional positions
+
+walk_forward:
+  train_bars: 240
+  test_bars: 90
+  step_bars: 90
