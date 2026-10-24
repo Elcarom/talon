@@ -18,20 +18,24 @@ from talon.types import PortfolioState
 
 
 def build_parser() -> argparse.ArgumentParser:
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument(
+        "-c",
+        "--config",
+        default=argparse.SUPPRESS,
+        help="Path to YAML configuration file (default: configs/default.yaml)",
+    )
+
     parser = argparse.ArgumentParser(
         prog="talon",
         description="TALON: Tactical Allocation & Liquidity Order Engine (Paper/Simulation by Default)",
-    )
-    parser.add_argument(
-        "-c",
-        "--config",
-        default=None,
-        help="Path to YAML configuration file (default: configs/default.yaml)",
+        parents=[common],
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
     bt_parser = sub.add_parser(
         "backtest",
+        parents=[common],
         help="Run causal backtest and walk-forward validation, generating reports/ artifacts",
     )
     bt_parser.add_argument(
@@ -43,6 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     wf_parser = sub.add_parser(
         "walk-forward",
+        parents=[common],
         help="Run rolling walk-forward evaluation and print JSON summary",
     )
     wf_parser.add_argument(
@@ -60,6 +65,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser(
         "paper-tick",
+        parents=[common],
         help="Execute a single causal paper-trading evaluation cycle on the latest bar",
     )
 
@@ -70,9 +76,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     logger = get_logger("talon")
+    config_path: str | None = getattr(args, "config", None)
 
     try:
-        cfg = load_config(args.config)
+        cfg = load_config(config_path)
     except ConfigError as exc:
         logger.error(f"Configuration validation error: {exc}")
         return 2
